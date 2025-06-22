@@ -167,7 +167,6 @@ fun RowScope.MainNavItem(
 }
 
 fun Route<*>.isOnTop(entry: NavBackStackEntry?): Boolean {
-    Log.d("LOGUSIKI", "${entry?.destination?.route}")
     return entry?.destination?.route == route
 }
 

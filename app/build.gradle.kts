@@ -47,6 +47,8 @@ dependencies {
     implementation(libs.bundles.dagger)
     kapt(libs.bundles.dagger.compiler)
 
+    implementation(libs.bundles.coil)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

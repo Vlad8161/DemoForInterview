@@ -13,6 +13,7 @@ nav = "2.9.0"
 uiTextGoogleFonts = "1.8.3"
 dagger = "2.51"
 hilt_nav = "1.2.0"
+coil = "3.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,10 +38,13 @@ dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", versi
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt_nav" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 [bundles]
 dagger = ["dagger", "hilt", "hilt-navigation"]
 dagger-compiler = ["dagger-compiler", "hilt-compiler"]
+coil = ["coil-compose", "coil-okhttp"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

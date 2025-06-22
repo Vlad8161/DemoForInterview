@@ -67,7 +67,7 @@ class HomeViewModel @Inject constructor() : ViewModel() {
                     price = 20,
                     rating = 4.4f,
                     commentCount = 4536,
-                    imageUrl = null,
+                    imageUrl = "https://cdn.create.vista.com/api/media/small/77490208/stock-photo-delicious-cheese-stringy-slice-lifted-of-full-supreme-pizza-baked-fresh-out-of-the-oven",
                 ),
                 countInCart = 0,
                 inFavorites = false

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,10 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImageContent
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.demo.compose.R
 import com.demo.compose.presentation.home.PizzaItem
 import com.demo.compose.presentation.home.PizzaItemLoadingState
@@ -30,38 +36,6 @@ import com.demo.compose.ui.views.ExpandableCartButton
 import com.demo.compose.ui.views.IconButton
 import com.demo.compose.utils.toStringWithWhitespace
 import java.util.UUID
-
-@Preview
-@Composable
-fun PizzaItemPreview() {
-    AppTheme {
-        HomeScreenPizzaItemView(
-            PizzaItemLoadingState(
-                state = PizzaItemState(
-                    item = PizzaItem(
-                        id = UUID.randomUUID(),
-                        name = "Pepperoni",
-                        category = "Italian kitchen",
-                        price = 20,
-                        rating = 4.4f,
-                        commentCount = 4536,
-                        imageUrl = null,
-                    ),
-                    countInCart = 10,
-                    inFavorites = false
-                ),
-                loadingCart = false,
-                loadingFav = false
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp, start = 16.dp, end = 16.dp),
-            onAddToCart = {},
-            onRemoveFromCart = {},
-            onFavClick = {},
-        )
-    }
-}
 
 @Composable
 fun HomeScreenPizzaItemView(
@@ -87,12 +61,46 @@ fun HomeScreenPizzaItemView(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(114.dp, 114.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(colors.surfaceContainerHighest)
-                ) // TODO: load image
+                if (item.state.item.imageUrl != null) {
+                    SubcomposeAsyncImage(
+                        model = ImageRequest.Builder(ctx)
+                            .data(item.state.item.imageUrl)
+                            .crossfade(true)
+                            .build(),
+                        loading = {
+                            Box {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .align(Alignment.Center)
+                                        .size(36.dp)
+                                )
+                            }
+                        },
+                        contentScale = ContentScale.Crop,
+                        contentDescription = item.state.item.name,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .size(114.dp),
+                        success = {
+                            SubcomposeAsyncImageContent()
+                        },
+                        error = {
+                            Box(
+                                modifier = Modifier
+                                    .size(114.dp, 114.dp)
+                                    .clip(RoundedCornerShape(20.dp))
+                                    .background(colors.errorContainer)
+                            )
+                        }
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(114.dp, 114.dp)
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(colors.surfaceContainerHighest)
+                    )
+                }
                 Column {
                     Text(
                         text = item.state.item.name,
@@ -171,6 +179,38 @@ fun HomeScreenPizzaItemView(
                 .padding(start = 134.dp),
             onClickAdd = { onAddToCart() },
             onClickRemove = { onRemoveFromCart() },
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenPizzaItemPreview() {
+    AppTheme {
+        HomeScreenPizzaItemView(
+            PizzaItemLoadingState(
+                state = PizzaItemState(
+                    item = PizzaItem(
+                        id = UUID.randomUUID(),
+                        name = "Pepperoni",
+                        category = "Italian kitchen",
+                        price = 20,
+                        rating = 4.4f,
+                        commentCount = 4536,
+                        imageUrl = null,
+                    ),
+                    countInCart = 10,
+                    inFavorites = false
+                ),
+                loadingCart = false,
+                loadingFav = false
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp, start = 16.dp, end = 16.dp),
+            onAddToCart = {},
+            onRemoveFromCart = {},
+            onFavClick = {},
         )
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ComposeSample</string>
+    <string name="app_name">Pizza Bar</string>
 
     <string name="menu_item_home">Home</string>
     <string name="menu_item_fav">Fav</string>
