@@ -79,6 +79,7 @@ fun HomeScreenPizzaItemView(
             colors = CardDefaults.cardColors()
                 .copy(containerColor = colors.surfaceContainer),
             elevation = CardDefaults.cardElevation(2.dp),
+            shape = RoundedCornerShape(20.dp),
             modifier = Modifier
                 .padding(bottom = 12.dp)
         ) {

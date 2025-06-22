@@ -1,12 +1,15 @@
 package com.demo.compose.ui.views
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
@@ -41,6 +44,7 @@ fun IconButton(
     bgColor: Color,
     fgColor: Color,
     modifier: Modifier = Modifier,
+    loading: Boolean = true,
     onClick: () -> Unit
 ) {
     Card(
@@ -55,17 +59,31 @@ fun IconButton(
         Box(
             modifier = Modifier
                 .clickable(
+                    enabled = !loading,
                     interactionSource = remember { MutableInteractionSource() },
                     indication = ripple(),
                     onClick = onClick
                 )
         ) {
-            Icon(
-                painter,
-                contentDescription = null,
-                tint = fgColor,
-                modifier = Modifier.padding(6.dp)
-            )
+            AnimatedContent(
+                targetState = loading
+            ) { loading ->
+                if (loading) {
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .size(18.dp, 18.dp)
+                    )
+                } else {
+                    Icon(
+                        painter,
+                        contentDescription = null,
+                        tint = fgColor,
+                        modifier = Modifier.padding(6.dp)
+                    )
+                }
+            }
         }
     }
 }
