@@ -5,4 +5,15 @@
     <string name="menu_item_fav">Fav</string>
     <string name="menu_item_cart">Cart</string>
     <string name="menu_item_profile">Profile</string>
+
+    <string name="home_title">Pizza Bar</string>
+    <string name="home_subtitle">The most delicious pizza in the world</string>
+    <string name="home_error">Failed to load pizzas</string>
+    <string name="home_order_label">Order by</string>
+    <string name="home_order_price">Price</string>
+    <string name="home_order_name">Name</string>
+    <string name="home_order_category">Category</string>
+
+    <string name="item_pizza_comment_description">Comments</string>
+    <string name="item_pizza_rating_description">Rating</string>
 </resources>

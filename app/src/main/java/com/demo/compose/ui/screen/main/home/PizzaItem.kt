@@ -1,0 +1,175 @@
+package com.demo.compose.ui.screen.main.home
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.demo.compose.R
+import com.demo.compose.presentation.home.PizzaItem
+import com.demo.compose.presentation.home.PizzaItemLoadingState
+import com.demo.compose.presentation.home.PizzaItemState
+import com.demo.compose.ui.theme.AppTheme
+import com.demo.compose.ui.views.ExpandableCartButton
+import com.demo.compose.ui.views.IconButton
+import com.demo.compose.utils.toStringWithWhitespace
+import java.util.UUID
+
+@Preview
+@Composable
+fun PizzaItemPreview() {
+    AppTheme {
+        HomeScreenPizzaItemView(
+            PizzaItemLoadingState(
+                state = PizzaItemState(
+                    item = PizzaItem(
+                        id = UUID.randomUUID(),
+                        name = "Pepperoni",
+                        category = "Italian kitchen",
+                        price = 20,
+                        rating = 4.4f,
+                        commentCount = 4536,
+                        imageUrl = null,
+                    ),
+                    countInCart = 10,
+                    inFavorites = false
+                ),
+                loadingCart = false,
+                loadingFav = false
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp, start = 16.dp, end = 16.dp),
+            onAddToCart = {},
+            onRemoveFromCart = {},
+            onFavClick = {},
+        )
+    }
+}
+
+@Composable
+fun HomeScreenPizzaItemView(
+    item: PizzaItemLoadingState,
+    modifier: Modifier = Modifier,
+    onAddToCart: () -> Unit,
+    onRemoveFromCart: () -> Unit,
+    onFavClick: () -> Unit,
+) {
+    val colors = MaterialTheme.colorScheme
+    val typo = MaterialTheme.typography
+    val ctx = LocalContext.current
+    Box(modifier) {
+        Card(
+            colors = CardDefaults.cardColors()
+                .copy(containerColor = colors.surfaceContainer),
+            elevation = CardDefaults.cardElevation(2.dp),
+            modifier = Modifier
+                .padding(bottom = 12.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(114.dp, 114.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(colors.surfaceContainerHighest)
+                ) // TODO: load image
+                Column {
+                    Text(
+                        text = item.state.item.name,
+                        style = typo.titleMedium,
+                        color = colors.onSurface,
+                        modifier = Modifier
+                            .padding(top = 12.dp, start = 16.dp, end = 16.dp)
+
+                    )
+                    Text(
+                        text = item.state.item.category,
+                        style = typo.labelMedium,
+                        color = colors.outline,
+                        modifier = Modifier
+                            .padding(top = 2.dp, start = 16.dp, end = 16.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 9.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .weight(1f),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.icon_comment),
+                                contentDescription = ctx.getString(R.string.item_pizza_comment_description),
+                                tint = colors.tertiary
+                            )
+                            Text(
+                                text = item.state.item.commentCount.toStringWithWhitespace(),
+                                style = typo.labelLarge,
+                                color = colors.onSurfaceVariant,
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .weight(1f)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.icon_star),
+                                contentDescription = ctx.getString(R.string.item_pizza_rating_description),
+                                tint = colors.tertiary
+                            )
+                            Text(
+                                text = item.state.item.commentCount.toStringWithWhitespace(),
+                                style = typo.labelLarge,
+                                color = colors.onSurfaceVariant,
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        IconButton(
+            painter = painterResource(R.drawable.icon_favorite),
+            bgColor = colors.primaryContainer,
+            fgColor = colors.onPrimaryContainer,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp),
+            onClick = { onFavClick() }
+        )
+        ExpandableCartButton(
+            countInCart = item.state.countInCart,
+            loading = item.loadingCart,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 134.dp),
+            onClickAdd = { onAddToCart() },
+            onClickRemove = { onRemoveFromCart() },
+        )
+    }
+}

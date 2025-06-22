@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -14,8 +15,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -23,6 +26,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -30,7 +35,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.getstarted.compose.R
+import com.demo.compose.R
 import com.demo.compose.ui.screen.main.cart.CartRoute
 import com.demo.compose.ui.screen.main.cart.CartScreen
 import com.demo.compose.ui.screen.main.fav.FavRoute
@@ -40,8 +45,11 @@ import com.demo.compose.ui.screen.main.home.HomeScreen
 import com.demo.compose.ui.screen.main.profile.ProfileRoute
 import com.demo.compose.ui.screen.main.profile.ProfileScreen
 
-interface Route {
+interface Route<T : ViewModel> {
     val route: String
+
+    @Composable
+    fun provideViewModel(): T
 }
 
 @Composable
@@ -52,7 +60,14 @@ fun MainScreenNav(navController: NavHostController, modifier: Modifier = Modifie
         startDestination = HomeRoute.route,
     ) {
         composable(HomeRoute.route) {
-            HomeScreen()
+            val viewModel = HomeRoute.provideViewModel()
+            val viewState by viewModel.state.collectAsStateWithLifecycle()
+            HomeScreen(
+                state = viewState,
+                onAddToCart = viewModel::onAddToCart,
+                onRemoveFromCart = viewModel::onRemoveFromCart,
+                onFavClick = viewModel::onFavClick,
+            )
         }
         composable(FavRoute.route) {
             FavScreen()
@@ -132,7 +147,11 @@ fun RowScope.MainNavItem(
         modifier = modifier
             .height(80.dp)
             .weight(1f)
-            .clickable { onClick() }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(bounded = false),
+                onClick = onClick
+            )
     ) {
         Icon(
             painterResource(iconId),
@@ -147,12 +166,12 @@ fun RowScope.MainNavItem(
     }
 }
 
-fun Route.isOnTop(entry: NavBackStackEntry?): Boolean {
+fun Route<*>.isOnTop(entry: NavBackStackEntry?): Boolean {
     Log.d("LOGUSIKI", "${entry?.destination?.route}")
     return entry?.destination?.route == route
 }
 
-fun NavController.replace(route: Route) {
+fun NavController.replace(route: Route<*>) {
     navigate(route.route, NavOptions.Builder()
         .also {
             val currentId = currentDestination?.id

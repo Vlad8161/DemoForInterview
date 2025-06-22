@@ -5,7 +5,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
-import com.getstarted.compose.R
+import androidx.compose.ui.unit.sp
+import com.demo.compose.R
 
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
@@ -37,16 +38,37 @@ val AppTypography = Typography(
     headlineLarge = baseline.headlineLarge.copy(fontFamily = displayFontFamily),
     headlineMedium = baseline.headlineMedium.copy(fontFamily = displayFontFamily),
     headlineSmall = baseline.headlineSmall.copy(fontFamily = displayFontFamily),
-    titleLarge = baseline.titleLarge.copy(fontFamily = displayFontFamily),
-    titleMedium = baseline.titleMedium.copy(fontFamily = displayFontFamily),
-    titleSmall = baseline.titleSmall.copy(fontFamily = displayFontFamily),
+    titleLarge = baseline.titleLarge.copy(
+        fontFamily = displayFontFamily,
+        fontSize = 32.sp,
+        fontWeight = FontWeight.Bold,
+    ),
+    titleMedium = baseline.titleMedium.copy(
+        fontFamily = displayFontFamily,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold,
+    ),
+    titleSmall = baseline.titleSmall.copy(
+        fontFamily = displayFontFamily,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Normal,
+    ),
     bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily),
-    bodyMedium = baseline.bodyMedium.copy(fontFamily = bodyFontFamily),
+    bodyMedium = baseline.bodyMedium.copy(
+        fontFamily = bodyFontFamily,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Medium
+    ),
     bodySmall = baseline.bodySmall.copy(fontFamily = bodyFontFamily),
-    labelLarge = baseline.labelLarge.copy(fontFamily = bodyFontFamily),
+    labelLarge = baseline.labelLarge.copy(
+        fontFamily = bodyFontFamily,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.SemiBold,
+    ),
     labelMedium = baseline.labelMedium.copy(
         fontFamily = bodyFontFamily,
-        fontWeight = FontWeight.SemiBold
+        fontSize = 12.sp,
+        fontWeight = FontWeight.SemiBold,
     ),
     labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
 )

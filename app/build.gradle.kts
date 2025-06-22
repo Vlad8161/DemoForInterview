@@ -2,15 +2,17 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.getstarted.compose"
+    namespace = "com.demo.compose"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.getstarted.compose"
+        applicationId = "com.demo.compose"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -41,6 +43,9 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.bundles.dagger)
+    kapt(libs.bundles.dagger.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
