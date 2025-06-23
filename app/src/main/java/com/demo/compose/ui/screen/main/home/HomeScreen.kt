@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -206,14 +208,19 @@ fun HomeScreenDone(
     onFavClick: (id: UUID) -> Unit,
 ) {
     val ctx = LocalContext.current
-    Column(modifier = modifier) {
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            HomeOrder(order = state.order)
+    LazyColumn(modifier = modifier) {
+        item {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                HomeOrder(order = state.order)
+            }
         }
-        for (item in state.pizzaList) {
+        items(
+            items = state.pizzaList,
+            key = { it.state.pizza.id }
+        ) { item ->
             HomeScreenPizzaItemView(
                 item = item,
                 onAddToCart = { onAddToCart(item.state.pizza.id) },
