@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.accompanist)
 
     implementation(libs.bundles.dagger)
     kapt(libs.bundles.dagger.compiler)
