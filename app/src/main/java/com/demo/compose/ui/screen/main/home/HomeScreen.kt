@@ -1,11 +1,11 @@
 package com.demo.compose.ui.screen.main.home
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +38,7 @@ import com.demo.compose.ui.screen.main.Route
 import com.demo.compose.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
 import java.util.UUID
+import kotlin.reflect.KClass
 
 
 @Serializable
@@ -160,12 +161,14 @@ fun HomeScreen(
                 .background(colors.surface)
                 .fillMaxSize()
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                when (state) {
-                    is HomeViewModel.State.Loading -> HomeScreenLoading()
-                    is HomeViewModel.State.Error -> HomeScreenError()
-                    is HomeViewModel.State.Done -> HomeScreenDone(
-                        state = state,
+            AnimatedContent(
+                targetState = state::class
+            ) { targetState ->
+                when (targetState) {
+                    HomeViewModel.State.Loading::class -> HomeScreenLoading()
+                    HomeViewModel.State.Error::class -> HomeScreenError()
+                    HomeViewModel.State.Done::class -> HomeScreenDone(
+                        state = state as HomeViewModel.State.Done,
                         onAddToCart = onAddToCart,
                         onRemoveFromCart = onRemoveFromCart,
                         onFavClick = onFavClick
@@ -177,26 +180,30 @@ fun HomeScreen(
 }
 
 @Composable
-fun BoxScope.HomeScreenLoading() {
-    CircularProgressIndicator(
-        modifier = Modifier
-            .align(Alignment.Center)
-    )
+fun HomeScreenLoading(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .align(Alignment.Center)
+        )
+    }
 }
 
 @Composable
-fun BoxScope.HomeScreenError() {
+fun HomeScreenError(modifier: Modifier = Modifier) {
     val ctx = LocalContext.current
     val typo = MaterialTheme.typography
     val colors = MaterialTheme.colorScheme
-    Text(
-        text = ctx.getString(R.string.home_error),
-        style = typo.bodyMedium,
-        color = colors.onSurface,
-        modifier = Modifier
-            .padding(32.dp)
-            .align(Alignment.Center)
-    )
+    Box(modifier = modifier.fillMaxSize()) {
+        Text(
+            text = ctx.getString(R.string.home_error),
+            style = typo.bodyMedium,
+            color = colors.onSurface,
+            modifier = Modifier
+                .padding(32.dp)
+                .align(Alignment.Center)
+        )
+    }
 }
 
 @Composable
@@ -208,28 +215,33 @@ fun HomeScreenDone(
     onFavClick: (id: UUID) -> Unit,
 ) {
     val ctx = LocalContext.current
-    LazyColumn(modifier = modifier) {
-        item {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                HomeOrder(order = state.order)
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn {
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    HomeOrder(order = state.order)
+                }
             }
-        }
-        items(
-            items = state.pizzaList,
-            key = { it.state.pizza.id }
-        ) { item ->
-            HomeScreenPizzaItemView(
-                item = item,
-                onAddToCart = { onAddToCart(item.state.pizza.id) },
-                onRemoveFromCart = { onRemoveFromCart(item.state.pizza.id) },
-                onFavClick = { onFavClick(item.state.pizza.id) },
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 12.dp)
-            )
+            items(
+                items = state.pizzaList,
+                key = { it.state.pizza.id }
+            ) { item ->
+                HomeScreenPizzaItemView(
+                    item = item,
+                    onAddToCart = { onAddToCart(item.state.pizza.id) },
+                    onRemoveFromCart = { onRemoveFromCart(item.state.pizza.id) },
+                    onFavClick = { onFavClick(item.state.pizza.id) },
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 12.dp)
+                )
+            }
         }
     }
 }
