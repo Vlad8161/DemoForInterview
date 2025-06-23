@@ -14,7 +14,7 @@ class MockPizzaApi @Inject constructor() : PizzaApi {
 
         return listOf(
             Pizza(
-                id = UUID.randomUUID(),
+                id = UUID.fromString("cb05fb92-4fcd-11f0-8600-77e163d9034d"),
                 name = "Pepperoni",
                 category = "Italian kitchen",
                 price = 20,
@@ -23,7 +23,7 @@ class MockPizzaApi @Inject constructor() : PizzaApi {
                 imageUrl = "https://cdn.create.vista.com/api/media/small/77490208/stock-photo-delicious-cheese-stringy-slice-lifted-of-full-supreme-pizza-baked-fresh-out-of-the-oven",
             ),
             Pizza(
-                id = UUID.randomUUID(),
+                id = UUID.fromString("d8b373fa-4fcd-11f0-bb78-73b1ab6102d1"),
                 name = "Pepperoni",
                 category = "Italian kitchen",
                 price = 20,

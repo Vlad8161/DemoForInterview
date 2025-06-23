@@ -1,5 +1,6 @@
 package com.demo.compose.data
 
+import android.util.Log
 import com.demo.compose.domain.repo.CartRepo
 import com.demo.compose.model.CartItem
 import kotlinx.coroutines.sync.Mutex
@@ -18,9 +19,11 @@ class InMemoryCartRepo @Inject constructor() : CartRepo {
 
     override suspend fun add(pizzaId: UUID) {
         mutex.withLock {
+            Log.d("LOGUSIKI", "before add: ${inMemoryCart[pizzaId]}")
             val item = inMemoryCart[pizzaId]
                 ?: CartItem(pizzaId, 0)
             inMemoryCart[pizzaId] = item.copy(count = item.count + 1)
+            Log.d("LOGUSIKI", "after add: ${inMemoryCart[pizzaId]}")
         }
     }
 

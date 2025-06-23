@@ -1,5 +1,6 @@
 package com.demo.compose.domain
 
+import android.util.Log
 import com.demo.compose.domain.repo.CartRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -11,6 +12,10 @@ import javax.inject.Inject
 class AddItemToCartInteractor @Inject constructor(
     private val cartRepo: CartRepo,
 ) {
+    init {
+        Log.d("LOGUSIKI", "AddItemToCartInteracto $cartRepo")
+    }
+
     suspend operator fun invoke(pizzaId: UUID): Unit = withContext(Dispatchers.IO) {
         delay(1000)
         cartRepo.add(pizzaId)
