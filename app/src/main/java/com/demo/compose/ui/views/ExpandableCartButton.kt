@@ -113,9 +113,11 @@ fun ExpandableCartButton(
                     }
                     ExpandableCartButtonState.LOADING -> {
                         CircularProgressIndicator(
+                            color = colors.onPrimary,
+                            strokeWidth = 2.dp,
                             modifier = Modifier
-                                .padding(6.dp)
-                                .size(24.dp, 24.dp)
+                                .padding(10.dp)
+                                .size(16.dp)
                         )
                     }
                 }

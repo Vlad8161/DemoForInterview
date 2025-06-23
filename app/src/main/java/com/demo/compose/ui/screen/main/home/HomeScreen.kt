@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,11 +27,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.demo.compose.R
+import com.demo.compose.model.Order
+import com.demo.compose.model.Pizza
+import com.demo.compose.model.PizzaState
 import com.demo.compose.presentation.home.HomeViewModel
-import com.demo.compose.presentation.home.Order
-import com.demo.compose.presentation.home.PizzaItem
-import com.demo.compose.presentation.home.PizzaItemLoadingState
-import com.demo.compose.presentation.home.PizzaItemState
+import com.demo.compose.presentation.home.PizzaStateLoadingWrapper
 import com.demo.compose.ui.screen.main.Route
 import com.demo.compose.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
@@ -53,10 +52,10 @@ object HomeRoute : Route<HomeViewModel> {
 fun HomeScreenPreview() {
     val done = HomeViewModel.State.Done(
         order = Order.ByPrice(desc = true),
-        items = listOf(
-            PizzaItemLoadingState(
-                state = PizzaItemState(
-                    item = PizzaItem(
+        pizzaList = listOf(
+            PizzaStateLoadingWrapper(
+                state = PizzaState(
+                    pizza = Pizza(
                         id = UUID.randomUUID(),
                         name = "Pepperoni",
                         category = "Italian kitchen",
@@ -72,9 +71,9 @@ fun HomeScreenPreview() {
                 loadingFav = false
             ),
 
-            PizzaItemLoadingState(
-                state = PizzaItemState(
-                    item = PizzaItem(
+            PizzaStateLoadingWrapper(
+                state = PizzaState(
+                    pizza = Pizza(
                         id = UUID.randomUUID(),
                         name = "Pepperoni",
                         category = "Italian kitchen",
@@ -90,9 +89,9 @@ fun HomeScreenPreview() {
                 loadingFav = false
             ),
 
-            PizzaItemLoadingState(
-                state = PizzaItemState(
-                    item = PizzaItem(
+            PizzaStateLoadingWrapper(
+                state = PizzaState(
+                    pizza = Pizza(
                         id = UUID.randomUUID(),
                         name = "Pepperoni",
                         category = "Italian kitchen",
@@ -214,12 +213,12 @@ fun HomeScreenDone(
         ) {
             HomeOrder(order = state.order)
         }
-        for (item in state.items) {
+        for (item in state.pizzaList) {
             HomeScreenPizzaItemView(
                 item = item,
-                onAddToCart = { onAddToCart(item.state.item.id) },
-                onRemoveFromCart = { onRemoveFromCart(item.state.item.id) },
-                onFavClick = { onFavClick(item.state.item.id) },
+                onAddToCart = { onAddToCart(item.state.pizza.id) },
+                onRemoveFromCart = { onRemoveFromCart(item.state.pizza.id) },
+                onFavClick = { onFavClick(item.state.pizza.id) },
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 12.dp)

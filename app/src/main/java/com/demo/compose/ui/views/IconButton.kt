@@ -44,7 +44,7 @@ fun IconButton(
     bgColor: Color,
     fgColor: Color,
     modifier: Modifier = Modifier,
-    loading: Boolean = true,
+    loading: Boolean = false,
     onClick: () -> Unit
 ) {
     Card(

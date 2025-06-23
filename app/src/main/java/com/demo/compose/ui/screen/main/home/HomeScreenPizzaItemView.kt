@@ -28,9 +28,9 @@ import coil3.compose.SubcomposeAsyncImageContent
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.demo.compose.R
-import com.demo.compose.presentation.home.PizzaItem
-import com.demo.compose.presentation.home.PizzaItemLoadingState
-import com.demo.compose.presentation.home.PizzaItemState
+import com.demo.compose.model.Pizza
+import com.demo.compose.model.PizzaState
+import com.demo.compose.presentation.home.PizzaStateLoadingWrapper
 import com.demo.compose.ui.theme.AppTheme
 import com.demo.compose.ui.views.ExpandableCartButton
 import com.demo.compose.ui.views.IconButton
@@ -39,7 +39,7 @@ import java.util.UUID
 
 @Composable
 fun HomeScreenPizzaItemView(
-    item: PizzaItemLoadingState,
+    item: PizzaStateLoadingWrapper,
     modifier: Modifier = Modifier,
     onAddToCart: () -> Unit,
     onRemoveFromCart: () -> Unit,
@@ -61,10 +61,10 @@ fun HomeScreenPizzaItemView(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (item.state.item.imageUrl != null) {
+                if (item.state.pizza.imageUrl != null) {
                     SubcomposeAsyncImage(
                         model = ImageRequest.Builder(ctx)
-                            .data(item.state.item.imageUrl)
+                            .data(item.state.pizza.imageUrl)
                             .crossfade(true)
                             .build(),
                         loading = {
@@ -77,7 +77,7 @@ fun HomeScreenPizzaItemView(
                             }
                         },
                         contentScale = ContentScale.Crop,
-                        contentDescription = item.state.item.name,
+                        contentDescription = item.state.pizza.name,
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
                             .size(114.dp),
@@ -103,7 +103,7 @@ fun HomeScreenPizzaItemView(
                 }
                 Column {
                     Text(
-                        text = item.state.item.name,
+                        text = item.state.pizza.name,
                         style = typo.titleMedium,
                         color = colors.onSurface,
                         modifier = Modifier
@@ -111,7 +111,7 @@ fun HomeScreenPizzaItemView(
 
                     )
                     Text(
-                        text = item.state.item.category,
+                        text = item.state.pizza.category,
                         style = typo.labelMedium,
                         color = colors.outline,
                         modifier = Modifier
@@ -134,7 +134,7 @@ fun HomeScreenPizzaItemView(
                                 tint = colors.tertiary
                             )
                             Text(
-                                text = item.state.item.commentCount.toStringWithWhitespace(),
+                                text = item.state.pizza.commentCount.toStringWithWhitespace(),
                                 style = typo.labelLarge,
                                 color = colors.onSurfaceVariant,
                                 modifier = Modifier
@@ -151,7 +151,7 @@ fun HomeScreenPizzaItemView(
                                 tint = colors.tertiary
                             )
                             Text(
-                                text = item.state.item.commentCount.toStringWithWhitespace(),
+                                text = item.state.pizza.commentCount.toStringWithWhitespace(),
                                 style = typo.labelLarge,
                                 color = colors.onSurfaceVariant,
                                 modifier = Modifier
@@ -166,6 +166,7 @@ fun HomeScreenPizzaItemView(
             painter = painterResource(R.drawable.icon_favorite),
             bgColor = colors.primaryContainer,
             fgColor = colors.onPrimaryContainer,
+            loading = item.loadingFav,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 16.dp),
@@ -188,9 +189,9 @@ fun HomeScreenPizzaItemView(
 fun HomeScreenPizzaItemPreview() {
     AppTheme {
         HomeScreenPizzaItemView(
-            PizzaItemLoadingState(
-                state = PizzaItemState(
-                    item = PizzaItem(
+            PizzaStateLoadingWrapper(
+                state = PizzaState(
+                    pizza = Pizza(
                         id = UUID.randomUUID(),
                         name = "Pepperoni",
                         category = "Italian kitchen",
