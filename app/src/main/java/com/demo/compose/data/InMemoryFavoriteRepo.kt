@@ -15,4 +15,16 @@ class InMemoryFavoriteRepo @Inject constructor(): FavoriteRepo {
     override suspend fun getFavorites(): Set<UUID> = mutex.withLock {
         HashSet(inMemoryFavorites)
     }
+
+    override suspend fun add(id: UUID) {
+        mutex.withLock {
+            inMemoryFavorites.add(id)
+        }
+    }
+
+    override suspend fun remove(id: UUID) {
+        mutex.withLock {
+            inMemoryFavorites.add(id)
+        }
+    }
 }

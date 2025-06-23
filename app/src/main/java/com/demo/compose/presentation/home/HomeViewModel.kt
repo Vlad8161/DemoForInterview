@@ -1,9 +1,10 @@
 package com.demo.compose.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.demo.compose.domain.AddItemToCartInteractor
+import com.demo.compose.domain.AddToFavInteractor
 import com.demo.compose.domain.LoadPizzaListInteractor
+import com.demo.compose.domain.RemoveFromFavInteractor
 import com.demo.compose.domain.RemoveItemFromCartInteractor
 import com.demo.compose.model.Order
 import com.demo.compose.model.PizzaState
@@ -23,6 +24,8 @@ class HomeViewModel @Inject constructor(
     private val loadPizzaListInteractor: LoadPizzaListInteractor,
     private val addToCartInteractor: AddItemToCartInteractor,
     private val removeFromCartInteractor: RemoveItemFromCartInteractor,
+    private val addToFavInteractor: AddToFavInteractor,
+    private val removeFromFavInteractor: RemoveFromFavInteractor
 ) : ViewModel() {
     private var _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     val state: StateFlow<State>
@@ -45,13 +48,8 @@ class HomeViewModel @Inject constructor(
         updateCartCount(pizzaId, -1)
     }
 
-    fun onFavClick(itemId: UUID) {
-        val s = state.value as State.Done
-        _state.value = s.copy(
-            pizzaList = s.pizzaList.updateStateByPizzaId(itemId) { itemState ->
-                itemState.copy(inFavorites = !itemState.inFavorites)
-            }
-        )
+    fun onFavClick(pizzaId: UUID) {
+        switchFav(pizzaId)
     }
 
     private fun loadPizza() {
@@ -66,6 +64,51 @@ class HomeViewModel @Inject constructor(
                 )
             } catch (e: Exception) {
                 _state.value = State.Error
+            }
+        }
+    }
+
+    private fun switchFav(pizzaId: UUID) {
+        if (favJobs[pizzaId]?.isActive == true) {
+            return
+        }
+
+        val s = state.value as State.Done
+        val pizzaState = s.pizzaList
+            .firstOrNull { it.state.pizza.id == pizzaId }
+            ?: return
+        _state.value = s.copy(
+            pizzaList = s.pizzaList.updateLoadingByPizzaId(pizzaId) { pizzaItem ->
+                pizzaItem.copy(loadingFav = true)
+            }
+        )
+
+        favJobs[pizzaId] = scope.launch {
+            try {
+                if (pizzaState.state.inFavorites) {
+                    removeFromFavInteractor(pizzaId)
+                } else {
+                    addToFavInteractor(pizzaId)
+                }
+
+                val s = state.value as? State.Done ?: return@launch
+                _state.value = s.copy(
+                    pizzaList = s.pizzaList.updateLoadingByPizzaId(pizzaId) { pizzaItem ->
+                        pizzaItem.copy(
+                            loadingFav = false,
+                            state = pizzaItem.state.copy(
+                                inFavorites = !pizzaState.state.inFavorites
+                            )
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                val s = state.value as? State.Done ?: return@launch
+                _state.value = s.copy(
+                    pizzaList = s.pizzaList.updateLoadingByPizzaId(pizzaId) { pizzaItem ->
+                        pizzaItem.copy(loadingFav = false)
+                    }
+                )
             }
         }
     }

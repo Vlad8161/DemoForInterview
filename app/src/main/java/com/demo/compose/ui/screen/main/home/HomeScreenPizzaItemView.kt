@@ -163,7 +163,12 @@ fun HomeScreenPizzaItemView(
             }
         }
         IconButton(
-            painter = painterResource(R.drawable.icon_favorite),
+            painter = painterResource(
+                when {
+                    item.state.inFavorites -> R.drawable.icon_favorite_filled
+                    else -> R.drawable.icon_favorite
+                }
+            ),
             bgColor = colors.primaryContainer,
             fgColor = colors.onPrimaryContainer,
             loading = item.loadingFav,
